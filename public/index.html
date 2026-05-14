@@ -17,7 +17,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Jost',sans-serif;background:var(--crema);color:var(--text);min-height:100vh;}
 
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
   background:linear-gradient(145deg,var(--dark) 0%,var(--dark-mid) 100%);}
 .login-card{background:var(--crema);border-radius:20px;padding:48px 40px;width:100%;max-width:400px;
@@ -25,29 +24,25 @@ body{font-family:'Jost',sans-serif;background:var(--crema);color:var(--text);min
 .login-logo{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--terracota);line-height:1.1;margin-bottom:6px;}
 .login-sub{font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:32px;}
 .login-card label{display:block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);margin-bottom:6px;text-align:left;}
-.login-card input{width:100%;padding:13px 16px;border:1.5px solid var(--borde);border-radius:10px;
-  font-family:'Jost',sans-serif;font-size:1rem;color:var(--dark);background:#fff;outline:none;margin-bottom:20px;}
-.login-card input:focus{border-color:var(--terracota);}
+.login-card select{width:100%;padding:13px 16px;border:1.5px solid var(--borde);border-radius:10px;
+  font-family:'Jost',sans-serif;font-size:1rem;color:var(--dark);background:#fff;outline:none;margin-bottom:20px;cursor:pointer;}
+.login-card select:focus{border-color:var(--terracota);}
 .btn-primary{width:100%;padding:14px;background:var(--terracota);color:#fff;border:none;border-radius:10px;
-  font-family:'Jost',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;
-  transition:background 0.2s;}
+  font-family:'Jost',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:0.03em;transition:background 0.2s;}
 .btn-primary:hover{background:var(--terracota-d);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
 .err{color:var(--terracota);font-size:0.85rem;margin-top:8px;}
 
-/* APP */
 .app-wrap{display:none;flex-direction:column;min-height:100vh;}
 .app-wrap.show{display:flex;}
-
 header{background:var(--dark);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-bottom:3px solid var(--terracota);}
 .hdr-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--crema);}
 .hdr-user{font-size:0.82rem;color:rgba(253,245,228,0.55);margin-top:2px;}
 .btn-logout{background:transparent;border:1px solid rgba(253,245,228,0.3);color:rgba(253,245,228,0.7);
   padding:7px 16px;border-radius:20px;font-family:'Jost',sans-serif;font-size:0.82rem;cursor:pointer;}
 .btn-logout:hover{border-color:var(--terracota-l);color:var(--terracota-l);}
-
 .main{flex:1;padding:28px 20px 60px;max-width:800px;margin:0 auto;width:100%;}
 
-/* Selector de comprador */
 .selector-card{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 3px 16px var(--shadow);}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--terracota);
   margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--crema-d);display:flex;align-items:center;gap:8px;}
@@ -65,28 +60,25 @@ select:focus{border-color:var(--terracota);}
   font-family:'Jost',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;}
 .btn-danger:hover{background:rgba(200,60,60,0.08);}
 
-/* Panel comprador */
 .comprador-panel{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 3px 16px var(--shadow);}
 .campo-group{margin-bottom:18px;}
 .campo-group label{display:block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);margin-bottom:6px;}
 .campo-group input{width:100%;padding:11px 15px;border:1.5px solid var(--borde);border-radius:8px;font-family:'Jost',sans-serif;font-size:0.95rem;color:var(--dark);background:#fff;outline:none;}
 .campo-group input:focus{border-color:var(--terracota);}
 
-/* Tickets */
 .tickets-titulo{font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);margin-bottom:10px;}
 .ticket-item{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
 .ticket-item label{display:block;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:4px;}
 .ticket-item input{width:100%;padding:8px 10px;border:1.5px solid var(--borde);border-radius:6px;font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--dark);background:#fff;outline:none;}
 .ticket-item input:focus{border-color:var(--terracota);}
+.ticket-item input.error{border-color:#d44;background:#fff5f5;}
 .btn-rm-ticket{background:transparent;border:1px solid #ddd;color:#aaa;border-radius:6px;padding:8px 10px;cursor:pointer;font-size:1rem;line-height:1;}
 .btn-rm-ticket:hover{border-color:#d44;color:#d44;}
 .btn-add-ticket{width:100%;padding:10px;background:transparent;border:2px dashed var(--borde);border-radius:8px;
   color:var(--text-light);font-family:'Jost',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;margin-top:4px;margin-bottom:18px;}
 .btn-add-ticket:hover{border-color:var(--terracota);color:var(--terracota);}
-
 .acciones-panel{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
 
-/* Resumen */
 .resumen-card{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:24px;box-shadow:0 3px 16px var(--shadow);}
 .resumen-table{width:100%;border-collapse:collapse;font-size:0.87rem;}
 .resumen-table th{background:var(--dark);color:var(--crema);padding:10px 14px;text-align:left;font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.05em;}
@@ -96,10 +88,7 @@ select:focus{border-color:var(--terracota);}
 .resumen-table .num{text-align:right;font-weight:600;}
 .total-row-res td{background:rgba(181,69,27,0.08)!important;font-weight:700;color:var(--terracota-d);}
 .empty-res{text-align:center;padding:28px;color:#bbb;font-style:italic;font-size:0.9rem;}
-.badge-edit{background:var(--terracota);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;margin-right:4px;}
-.badge-del{background:transparent;border:1px solid #d44;color:#d44;border-radius:6px;padding:3px 10px;font-size:0.75rem;cursor:pointer;}
 
-/* Toast */
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);
   color:var(--crema);padding:11px 24px;border-radius:50px;font-size:0.87rem;font-weight:600;
   border:1px solid var(--terracota);opacity:0;transition:transform 0.35s cubic-bezier(.34,1.56,.64,1),opacity 0.35s;z-index:999;white-space:nowrap;}
@@ -123,9 +112,11 @@ select:focus{border-color:var(--terracota);}
   <div class="login-card">
     <div class="login-logo">🥟 Empanadas</div>
     <div class="login-sub">Pastoral de Parejas</div>
-    <label for="inp-usuario">Tu usuario</label>
-    <input type="text" id="inp-usuario" placeholder="ej: virgiymartin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+    <label for="sel-usuario">Seleccioná tu pareja</label>
+    <select id="sel-usuario">
+      <option value="">— Cargando vendedores... —</option>
+    </select>
+    <button class="btn-primary" id="btn-ingresar" onclick="doLogin()">Ingresar</button>
     <div class="err" id="login-err"></div>
   </div>
 </div>
@@ -141,8 +132,6 @@ select:focus{border-color:var(--terracota);}
   </header>
 
   <div class="main">
-
-    <!-- Selector -->
     <div class="selector-card">
       <div class="card-title">📋 Mis compradores</div>
       <div class="select-row">
@@ -153,19 +142,15 @@ select:focus{border-color:var(--terracota);}
       </div>
     </div>
 
-    <!-- Panel edición -->
     <div class="comprador-panel" id="panel-comprador" style="display:none;">
       <div class="card-title" id="panel-titulo">📝 Nuevo comprador</div>
-
       <div class="campo-group">
         <label>Nombre del comprador</label>
         <input type="text" id="inp-nombre" placeholder="Nombre y apellido">
       </div>
-
       <div class="tickets-titulo">Tickets</div>
       <div id="tickets-container"></div>
       <button class="btn-add-ticket" onclick="agregarTicket()">＋ Agregar ticket</button>
-
       <div class="acciones-panel">
         <button class="btn-danger" onclick="cancelarEdicion()">Cancelar</button>
         <button id="btn-del-comprador" class="btn-danger" onclick="eliminarCompradorActual()" style="display:none;">🗑 Eliminar comprador</button>
@@ -173,12 +158,10 @@ select:focus{border-color:var(--terracota);}
       </div>
     </div>
 
-    <!-- Resumen -->
     <div class="resumen-card">
       <div class="card-title">📊 Resumen de mis ventas</div>
       <div id="resumen-container"><div class="empty-res">Aún no registraste ventas.</div></div>
     </div>
-
   </div>
 </div>
 
@@ -187,21 +170,39 @@ select:focus{border-color:var(--terracota);}
 <script>
 let usuario = '';
 let nombreVendedor = '';
-let ventas = []; // array de compradores con sus tickets
-let compradorEditandoId = null; // _id de mongo si es edición
-let tickets = []; // tickets del formulario actual
+let ventas = [];
+let compradorEditandoId = null;
+let tickets = [];
+
+// Cargar lista de vendedores al abrir la página
+window.addEventListener('load', async () => {
+  try {
+    const res = await fetch('/api/vendedores-lista');
+    const lista = await res.json();
+    const sel = document.getElementById('sel-usuario');
+    sel.innerHTML = '<option value="">— Seleccioná tu pareja —</option>';
+    lista.forEach(v => {
+      const op = document.createElement('option');
+      op.value = v.usuario;
+      op.textContent = v.nombre;
+      sel.appendChild(op);
+    });
+  } catch(e) {
+    document.getElementById('sel-usuario').innerHTML = '<option value="">Error cargando vendedores</option>';
+  }
+});
 
 async function doLogin() {
-  const u = document.getElementById('inp-usuario').value.trim().toLowerCase();
-  if(!u) return;
+  const u = document.getElementById('sel-usuario').value;
+  if(!u) { document.getElementById('login-err').textContent = 'Seleccioná tu pareja primero.'; return; }
   const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ usuario: u }) });
-  if(!res.ok) { document.getElementById('login-err').textContent = 'Usuario no encontrado. Consultá al organizador.'; return; }
+  if(!res.ok) { document.getElementById('login-err').textContent = 'Error al ingresar. Consultá al organizador.'; return; }
   const data = await res.json();
   usuario = u;
   nombreVendedor = data.nombre;
   document.getElementById('login-wrap').style.display = 'none';
   document.getElementById('app-wrap').classList.add('show');
-  document.getElementById('hdr-user').textContent = `Vendedor: ${nombreVendedor}`;
+  document.getElementById('hdr-user').textContent = `Pareja: ${nombreVendedor}`;
   await cargarVentas();
 }
 
@@ -209,7 +210,7 @@ function logout() {
   usuario = ''; nombreVendedor = ''; ventas = [];
   document.getElementById('login-wrap').style.display = 'flex';
   document.getElementById('app-wrap').classList.remove('show');
-  document.getElementById('inp-usuario').value = '';
+  document.getElementById('sel-usuario').value = '';
   document.getElementById('login-err').textContent = '';
 }
 
@@ -240,7 +241,8 @@ function seleccionarComprador() {
   if(!c) return;
   compradorEditandoId = id;
   document.getElementById('inp-nombre').value = c.nombre;
-  tickets = c.tickets.map(t => ({...t}));
+  // FIX punto 2: copia profunda correcta de tickets
+  tickets = JSON.parse(JSON.stringify(c.tickets));
   document.getElementById('panel-titulo').textContent = '✏️ Editando comprador';
   document.getElementById('btn-del-comprador').style.display = 'inline-block';
   renderTickets();
@@ -271,11 +273,14 @@ function cancelarEdicion() {
 }
 
 function agregarTicket() {
+  // FIX punto 2: leer estado actual antes de agregar
+  leerTickets();
   tickets.push({ numero:'', docenas:0, mediaDocenas:0 });
   renderTickets();
 }
 
 function eliminarTicket(idx) {
+  leerTickets();
   tickets.splice(idx, 1);
   if(tickets.length === 0) tickets.push({ numero:'', docenas:0, mediaDocenas:0 });
   renderTickets();
@@ -283,9 +288,9 @@ function eliminarTicket(idx) {
 
 function leerTickets() {
   tickets = tickets.map((_, i) => ({
-    numero: document.getElementById(`t-num-${i}`).value.trim(),
-    docenas: parseInt(document.getElementById(`t-doc-${i}`).value) || 0,
-    mediaDocenas: parseInt(document.getElementById(`t-med-${i}`).value) || 0,
+    numero: (document.getElementById(`t-num-${i}`)?.value || '').trim(),
+    docenas: parseInt(document.getElementById(`t-doc-${i}`)?.value) || 0,
+    mediaDocenas: parseInt(document.getElementById(`t-med-${i}`)?.value) || 0,
   }));
 }
 
@@ -299,7 +304,7 @@ function renderTickets() {
       <div><label>N° Ticket</label><input type="text" id="t-num-${i}" value="${t.numero}" placeholder="ej: 001"></div>
       <div><label>Docenas</label><input type="number" id="t-doc-${i}" value="${t.docenas}" min="0"></div>
       <div><label>Medias docenas</label><input type="number" id="t-med-${i}" value="${t.mediaDocenas}" min="0"></div>
-      <button class="btn-rm-ticket" onclick="leerTickets();eliminarTicket(${i})" title="Quitar">✕</button>
+      <button class="btn-rm-ticket" onclick="eliminarTicket(${i})" title="Quitar">✕</button>
     `;
     c.appendChild(div);
   });
@@ -309,18 +314,40 @@ async function guardarComprador() {
   leerTickets();
   const nombre = document.getElementById('inp-nombre').value.trim();
   if(!nombre) { showToast('⚠ Ingresá el nombre del comprador','error'); return; }
+
   const ticketsValidos = tickets.filter(t => t.numero || t.docenas > 0 || t.mediaDocenas > 0);
   if(ticketsValidos.length === 0) { showToast('⚠ Agregá al menos un ticket con cantidad','error'); return; }
 
-  const payload = {
-    usuario,
-    comprador: {
-      id: compradorEditandoId || null,
-      nombre,
-      tickets: ticketsValidos
-    }
-  };
+  // FIX punto 1: validar números de ticket duplicados
+  const numeros = ticketsValidos.map(t => t.numero).filter(Boolean);
+  const numerosUnicos = new Set(numeros);
+  if(numerosUnicos.size !== numeros.length) {
+    showToast('⚠ Hay tickets con el mismo número. Corregí antes de guardar.','error');
+    // Marcar los duplicados en rojo
+    const conteo = {};
+    numeros.forEach(n => conteo[n] = (conteo[n]||0) + 1);
+    tickets.forEach((t, i) => {
+      const inp = document.getElementById(`t-num-${i}`);
+      if(inp) inp.classList.toggle('error', t.numero && conteo[t.numero] > 1);
+    });
+    return;
+  }
 
+  // Validar duplicados contra otros compradores del mismo vendedor
+  const otrosTickets = ventas
+    .filter(v => v._id !== compradorEditandoId)
+    .flatMap(v => v.tickets.map(t => t.numero).filter(Boolean));
+  const duplicadosGlobales = numeros.filter(n => otrosTickets.includes(n));
+  if(duplicadosGlobales.length > 0) {
+    showToast(`⚠ Ticket/s duplicado/s: ${duplicadosGlobales.join(', ')}`, 'error');
+    tickets.forEach((t, i) => {
+      const inp = document.getElementById(`t-num-${i}`);
+      if(inp) inp.classList.toggle('error', duplicadosGlobales.includes(t.numero));
+    });
+    return;
+  }
+
+  const payload = { usuario, comprador: { id: compradorEditandoId || null, nombre, tickets: ticketsValidos } };
   const res = await fetch('/api/ventas', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   if(res.ok) {
     showToast('✓ Guardado correctamente','ok');
@@ -348,7 +375,6 @@ async function eliminarCompradorActual() {
 function renderResumen() {
   const c = document.getElementById('resumen-container');
   if(ventas.length === 0) { c.innerHTML = '<div class="empty-res">Aún no registraste ventas.</div>'; return; }
-
   let totalDoc = 0, totalMed = 0;
   let html = `<table class="resumen-table"><thead><tr><th>Comprador</th><th>Tickets</th><th class="num">Docenas</th><th class="num">Medias doc.</th></tr></thead><tbody>`;
   ventas.forEach(v => {
@@ -356,15 +382,9 @@ function renderResumen() {
     const med = v.tickets.reduce((s,t)=>s+(t.mediaDocenas||0),0);
     const nums = v.tickets.map(t=>t.numero).filter(Boolean).join(', ');
     totalDoc += doc; totalMed += med;
-    html += `<tr>
-      <td>${v.nombre}</td>
-      <td><span style="font-size:0.82rem;color:var(--text-light)">${nums||'—'}</span></td>
-      <td class="num">${doc||'—'}</td>
-      <td class="num">${med||'—'}</td>
-    </tr>`;
+    html += `<tr><td>${v.nombre}</td><td style="font-size:0.82rem;color:var(--text-light)">${nums||'—'}</td><td class="num">${doc||'—'}</td><td class="num">${med||'—'}</td></tr>`;
   });
-  html += `<tr class="total-row-res"><td colspan="2"><strong>TOTAL</strong></td><td class="num">${totalDoc}</td><td class="num">${totalMed}</td></tr>`;
-  html += `</tbody></table>`;
+  html += `<tr class="total-row-res"><td colspan="2"><strong>TOTAL</strong></td><td class="num">${totalDoc}</td><td class="num">${totalMed}</td></tr></tbody></table>`;
   c.innerHTML = html;
 }
 
@@ -372,7 +392,7 @@ function showToast(msg, tipo='') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast' + (tipo ? ' '+tipo : '');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3200);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 </script>
 </body>
