@@ -139,8 +139,8 @@ app.get('/api/admin/ventas', async (req, res) => {
   const ventas = await colVentas().find({}).toArray();
   const resultado = vendedores.map(v => {
     const mis = ventas.filter(x => x.usuario === v.usuario);
-    const totDocenas = mis.reduce((s, c) => s + c.tickets.reduce((s2, t) => s2 + (t.docenas || 0), 0), 0);
-    const totMedias = mis.reduce((s, c) => s + c.tickets.reduce((s2, t) => s2 + (t.mediaDocenas || 0), 0), 0);
+    const totDocenas = mis.reduce((s, c) => s + c.tickets.filter(t => t.tipo === 'docena' || (!t.tipo && t.docenas > 0)).length, 0);
+    const totMedias = mis.reduce((s, c) => s + c.tickets.filter(t => t.tipo === 'mediaDocena' || (t.mediaDocenas > 0)).length, 0);
     return {
       usuario: v.usuario,
       nombre: v.nombre,
@@ -171,8 +171,8 @@ app.get('/api/admin/exportar', async (req, res) => {
     const mis = ventas.filter(x => x.usuario === v.usuario);
     mis.forEach(c => {
       c.tickets.forEach(t => {
-        const doc = t.docenas || 0;
-        const med = t.mediaDocenas || 0;
+        const doc = (t.tipo === 'docena' || (!t.tipo && t.docenas > 0)) ? 1 : 0;
+        const med = (t.tipo === 'mediaDocena' || t.mediaDocenas > 0) ? 1 : 0;
         const total = doc * PRECIO_DOCENA + med * PRECIO_MEDIA;
         const gan = doc * GANANCIA_DOCENA + med * GANANCIA_MEDIA;
         const prov = doc * COSTO_DOCENA + med * COSTO_MEDIA;
@@ -192,8 +192,8 @@ app.get('/api/admin/exportar', async (req, res) => {
   const rows2 = [['Vendedor','Docenas','Medias Docenas','Total Recaudado $','Ganancia Pastoral $','Pago Proveedor $']];
   vendedores.forEach(v => {
     const mis = ventas.filter(x => x.usuario === v.usuario);
-    const doc = mis.reduce((s,c)=>s+c.tickets.reduce((s2,t)=>s2+(t.docenas||0),0),0);
-    const med = mis.reduce((s,c)=>s+c.tickets.reduce((s2,t)=>s2+(t.mediaDocenas||0),0),0);
+    const doc = mis.reduce((s,c)=>s+c.tickets.filter(t=>t.tipo==='docena'||(!t.tipo&&t.docenas>0)).length,0);
+    const med = mis.reduce((s,c)=>s+c.tickets.filter(t=>t.tipo==='mediaDocena'||(t.mediaDocenas>0)).length,0);
     rows2.push([v.nombre, doc, med, doc*PRECIO_DOCENA+med*PRECIO_MEDIA, doc*GANANCIA_DOCENA+med*GANANCIA_MEDIA, doc*COSTO_DOCENA+med*COSTO_MEDIA]);
   });
   const ws2 = XLSX.utils.aoa_to_sheet(rows2);
@@ -253,3 +253,4 @@ conectarDB().then(() => {
   console.error('Error MongoDB:', err);
   process.exit(1);
 });
+
