@@ -287,7 +287,10 @@ function eliminarTicket(idx) {
 }
 
 function leerTickets() {
-  tickets = tickets.map((_, i) => ({
+  // Leer directo del DOM, sin depender del array tickets
+  const container = document.getElementById('tickets-container');
+  const items = container.querySelectorAll('.ticket-item');
+  tickets = Array.from(items).map((_, i) => ({
     numero: (document.getElementById(`t-num-${i}`)?.value || '').trim(),
     docenas: parseInt(document.getElementById(`t-doc-${i}`)?.value) || 0,
     mediaDocenas: parseInt(document.getElementById(`t-med-${i}`)?.value) || 0,
