@@ -67,11 +67,13 @@ select:focus{border-color:var(--terracota);}
 .campo-group input:focus{border-color:var(--terracota);}
 
 .tickets-titulo{font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-light);margin-bottom:10px;}
-.ticket-item{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
+.ticket-item{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;}
 .ticket-item label{display:block;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:4px;}
 .ticket-item input{width:100%;padding:8px 10px;border:1.5px solid var(--borde);border-radius:6px;font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--dark);background:#fff;outline:none;}
 .ticket-item input:focus{border-color:var(--terracota);}
 .ticket-item input.error{border-color:#d44;background:#fff5f5;}
+.ticket-item select{width:100%;padding:8px 10px;border:1.5px solid var(--borde);border-radius:6px;font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--dark);background:#fff;outline:none;cursor:pointer;}
+.ticket-item select:focus{border-color:var(--terracota);}
 .btn-rm-ticket{background:transparent;border:1px solid #ddd;color:#aaa;border-radius:6px;padding:8px 10px;cursor:pointer;font-size:1rem;line-height:1;}
 .btn-rm-ticket:hover{border-color:#d44;color:#d44;}
 .btn-add-ticket{width:100%;padding:10px;background:transparent;border:2px dashed var(--borde);border-radius:8px;
@@ -97,7 +99,7 @@ select:focus{border-color:var(--terracota);}
 .toast.error{border-color:#d44;color:#ff8a60;}
 
 @media(max-width:520px){
-  .ticket-item{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
+  .ticket-item{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;}
   .btn-rm-ticket{grid-column:2;grid-row:2;justify-self:end;}
   .select-row{flex-direction:column;align-items:stretch;}
   .acciones-panel{justify-content:stretch;}
@@ -253,7 +255,7 @@ function nuevoComprador() {
   compradorEditandoId = null;
   document.getElementById('sel-comprador').value = '';
   document.getElementById('inp-nombre').value = '';
-  tickets = [{ numero:'', docenas:0, mediaDocenas:0 }];
+  tickets = [{ numero:'', tipo:'docena' }];
   document.getElementById('panel-titulo').textContent = '📝 Nuevo comprador';
   document.getElementById('btn-del-comprador').style.display = 'none';
   renderTickets();
@@ -275,25 +277,23 @@ function cancelarEdicion() {
 function agregarTicket() {
   // FIX punto 2: leer estado actual antes de agregar
   leerTickets();
-  tickets.push({ numero:'', docenas:0, mediaDocenas:0 });
+  tickets.push({ numero:'', tipo:'docena' });
   renderTickets();
 }
 
 function eliminarTicket(idx) {
   leerTickets();
   tickets.splice(idx, 1);
-  if(tickets.length === 0) tickets.push({ numero:'', docenas:0, mediaDocenas:0 });
+  if(tickets.length === 0) tickets.push({ numero:'', tipo:'docena' });
   renderTickets();
 }
 
 function leerTickets() {
-  // Leer directo del DOM, sin depender del array tickets
   const container = document.getElementById('tickets-container');
   const items = container.querySelectorAll('.ticket-item');
   tickets = Array.from(items).map((_, i) => ({
     numero: (document.getElementById(`t-num-${i}`)?.value || '').trim(),
-    docenas: parseInt(document.getElementById(`t-doc-${i}`)?.value) || 0,
-    mediaDocenas: parseInt(document.getElementById(`t-med-${i}`)?.value) || 0,
+    tipo: document.getElementById(`t-tipo-${i}`)?.value || 'docena',
   }));
 }
 
@@ -305,8 +305,12 @@ function renderTickets() {
     div.className = 'ticket-item';
     div.innerHTML = `
       <div><label>N° Ticket</label><input type="text" id="t-num-${i}" value="${t.numero}" placeholder="ej: 001"></div>
-      <div><label>Docenas</label><input type="number" id="t-doc-${i}" value="${t.docenas}" min="0"></div>
-      <div><label>Medias docenas</label><input type="number" id="t-med-${i}" value="${t.mediaDocenas}" min="0"></div>
+      <div><label>Tipo</label>
+        <select id="t-tipo-${i}">
+          <option value="docena" ${(t.tipo||'docena')==='docena'?'selected':''}>Docena</option>
+          <option value="mediaDocena" ${t.tipo==='mediaDocena'?'selected':''}>Media docena</option>
+        </select>
+      </div>
       <button class="btn-rm-ticket" onclick="eliminarTicket(${i})" title="Quitar">✕</button>
     `;
     c.appendChild(div);
@@ -381,8 +385,8 @@ function renderResumen() {
   let totalDoc = 0, totalMed = 0;
   let html = `<table class="resumen-table"><thead><tr><th>Comprador</th><th>Tickets</th><th class="num">Docenas</th><th class="num">Medias doc.</th></tr></thead><tbody>`;
   ventas.forEach(v => {
-    const doc = v.tickets.reduce((s,t)=>s+(t.docenas||0),0);
-    const med = v.tickets.reduce((s,t)=>s+(t.mediaDocenas||0),0);
+    const doc = v.tickets.filter(t=>t.tipo==='docena'||(!t.tipo&&t.docenas>0)).length;
+    const med = v.tickets.filter(t=>t.tipo==='mediaDocena'||(t.mediaDocenas>0)).length;
     const nums = v.tickets.map(t=>t.numero).filter(Boolean).join(', ');
     totalDoc += doc; totalMed += med;
     html += `<tr><td>${v.nombre}</td><td style="font-size:0.82rem;color:var(--text-light)">${nums||'—'}</td><td class="num">${doc||'—'}</td><td class="num">${med||'—'}</td></tr>`;
