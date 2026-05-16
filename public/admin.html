@@ -36,7 +36,9 @@ header h1{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--cr
 
 .section{display:none;} .section.show{display:block;}
 
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:28px;}
+.stats-grid-top{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+.stats-grid-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+@media(max-width:700px){.stats-grid-top{grid-template-columns:repeat(2,1fr);}.stats-grid-bottom{grid-template-columns:repeat(1,1fr);}}
 .stat{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 10px var(--shadow);}
 .stat .n{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--terracota);}
 .stat .l{font-size:0.75rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px;}
@@ -101,7 +103,7 @@ tr:nth-child(even) td{background:var(--crema);}
 
     <!-- TAB VENTAS -->
     <div class="section show" id="tab-ventas">
-      <div class="stats-grid" id="stats-grid"></div>
+      <div id="stats-grid"></div>
       <div class="card">
         <div class="card-title">Detalle por vendedor</div>
         <div class="table-wrap"><div id="tabla-ventas"></div></div>
@@ -188,13 +190,17 @@ function renderStats(){
   const totalGan=datosVentas.reduce((s,v)=>s+v.totalGanancia,0);
   const totalProv=datosVentas.reduce((s,v)=>s+v.totalProveedor,0);
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat"><div class="n">${totalVendedores}</div><div class="l">Vendedores activos</div></div>
-    <div class="stat"><div class="n">${totalCompradores}</div><div class="l">Compradores</div></div>
-    <div class="stat"><div class="n">${totalDocenas}</div><div class="l">Docenas</div></div>
-    <div class="stat"><div class="n">${totalMedias}</div><div class="l">Medias docenas</div></div>
-    <div class="stat"><div class="n" style="font-size:1.3rem">${fmt(totalRec)}</div><div class="l">Total recaudado</div></div>
-    <div class="stat"><div class="n" style="font-size:1.3rem;color:var(--verde)">${fmt(totalGan)}</div><div class="l">Ganancia pastoral</div></div>
-    <div class="stat"><div class="n" style="font-size:1.3rem;color:#b07020">${fmt(totalProv)}</div><div class="l">Pago proveedor</div></div>
+    <div class="stats-grid-top">
+      <div class="stat"><div class="n">${totalVendedores}</div><div class="l">Vendedores activos</div></div>
+      <div class="stat"><div class="n">${totalCompradores}</div><div class="l">Compradores</div></div>
+      <div class="stat"><div class="n">${totalDocenas}</div><div class="l">Docenas</div></div>
+      <div class="stat"><div class="n">${totalMedias}</div><div class="l">Medias docenas</div></div>
+    </div>
+    <div class="stats-grid-bottom">
+      <div class="stat"><div class="n" style="font-size:1.3rem">${fmt(totalRec)}</div><div class="l">Total recaudado</div></div>
+      <div class="stat"><div class="n" style="font-size:1.3rem;color:var(--verde)">${fmt(totalGan)}</div><div class="l">Ganancia pastoral</div></div>
+      <div class="stat"><div class="n" style="font-size:1.3rem;color:#b07020">${fmt(totalProv)}</div><div class="l">Pago proveedor</div></div>
+    </div>
   `;
 }
 
@@ -205,8 +211,8 @@ function renderVentas(){
   datosVentas.forEach(v=>{
     if(v.compradores.length===0) return;
     v.compradores.forEach(c=>{
-      const doc=c.tickets.reduce((s,t)=>s+(t.docenas||0),0);
-      const med=c.tickets.reduce((s,t)=>s+(t.mediaDocenas||0),0);
+      const doc=c.tickets.filter(t=>t.tipo==='docena'||(!t.tipo&&(t.docenas||0)>0)).length;
+      const med=c.tickets.filter(t=>t.tipo==='mediaDocena'||(t.mediaDocenas||0)>0).length;
       const nums=c.tickets.map(t=>t.numero).filter(Boolean).join(', ');
       totDoc+=doc;totMed+=med;
       html+=`<tr><td><span style="background:var(--dark);color:var(--crema-d);padding:2px 8px;border-radius:12px;font-size:0.75rem">${v.nombre}</span></td>
@@ -233,15 +239,16 @@ function renderTickets(){
   datosVentas.forEach(v=>{
     v.compradores.forEach(c=>{
       c.tickets.forEach(t=>{
-        todos.push({numero:t.numero,vendedor:v.nombre,comprador:c.nombre,doc:t.docenas||0,med:t.mediaDocenas||0});
+        const esDocena=t.tipo==='docena'||(!t.tipo&&(t.docenas||0)>0);
+        todos.push({numero:t.numero,vendedor:v.nombre,comprador:c.nombre,tipo:esDocena?'Docena':'Media docena',precio:esDocena?PRECIO_DOCENA:PRECIO_MEDIA});
       });
     });
   });
   todos.sort((a,b)=>String(a.numero).localeCompare(String(b.numero),undefined,{numeric:true}));
   if(todos.length===0){document.getElementById('tabla-tickets').innerHTML='<div class="empty">Sin tickets registrados.</div>';return;}
-  let html=`<table><thead><tr><th>N° Ticket</th><th>Vendedor</th><th>Comprador</th><th class="num">Docenas</th><th class="num">Medias doc.</th><th class="money">Total</th></tr></thead><tbody>`;
+  let html=`<table><thead><tr><th>N° Ticket</th><th>Vendedor</th><th>Comprador</th><th>Tipo</th><th class="money">Precio</th></tr></thead><tbody>`;
   todos.forEach(t=>{
-    html+=`<tr><td><strong>${t.numero||'—'}</strong></td><td>${t.vendedor}</td><td>${t.comprador}</td><td class="num">${t.doc||'—'}</td><td class="num">${t.med||'—'}</td><td class="money">${fmt(t.doc*PRECIO_DOCENA+t.med*PRECIO_MEDIA)}</td></tr>`;
+    html+=`<tr><td><strong>${t.numero||'—'}</strong></td><td>${t.vendedor}</td><td>${t.comprador}</td><td>${t.tipo}</td><td class="money">${fmt(t.precio)}</td></tr>`;
   });
   html+=`</tbody></table>`;
   document.getElementById('tabla-tickets').innerHTML=html;
