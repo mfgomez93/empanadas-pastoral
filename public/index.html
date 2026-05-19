@@ -100,7 +100,7 @@ select:focus{border-color:var(--gold);}
 .campo-group input:focus{border-color:var(--gold);}
 
 .tickets-titulo{font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-light);margin-bottom:10px;}
-.ticket-item{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;}
+
 .ticket-item label{display:block;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:4px;}
 .ticket-item input{width:100%;padding:8px 10px;border:1.5px solid var(--borde);border-radius:6px;font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--dark);background:#fff;outline:none;transition:border-color 0.15s;}
 .ticket-item input:focus{border-color:var(--gold);}
@@ -111,6 +111,12 @@ select:focus{border-color:var(--gold);}
 .btn-rm-ticket:hover{border-color:#d44;color:#d44;}
 .btn-add-ticket{width:100%;padding:10px;background:transparent;border:2px dashed var(--borde);border-radius:8px;color:var(--text-light);font-family:'Jost',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;margin-top:4px;margin-bottom:18px;transition:all 0.15s;}
 .btn-add-ticket:hover{border-color:var(--gold);color:var(--gold-d);}
+.ticket-checks{display:flex;flex-direction:column;gap:6px;justify-content:flex-end;}
+.check-item{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
+.check-item input[type="checkbox"]{width:17px;height:17px;accent-color:var(--verde);cursor:pointer;flex-shrink:0;}
+.check-label{font-size:0.75rem;font-weight:500;color:var(--text-light);line-height:1.2;}
+.check-item.checked .check-label{color:var(--verde);font-weight:600;}
+.ticket-item{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1.4fr 1fr auto;gap:10px;align-items:end;}
 .acciones-panel{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
 
 /* Resumen table */
@@ -339,6 +345,8 @@ function leerTickets(){
   tickets=Array.from(items).map((_,i)=>({
     numero:(document.getElementById(`t-num-${i}`)?.value||'').trim(),
     tipo:document.getElementById(`t-tipo-${i}`)?.value||'docena',
+    pago:document.getElementById(`t-pago-${i}`)?.checked||false,
+    entregado:document.getElementById(`t-entregado-${i}`)?.checked||false,
   }));
 }
 
@@ -355,6 +363,16 @@ function renderTickets(){
           <option value="docena" ${(t.tipo||'docena')==='docena'?'selected':''}>Docena — $22.000</option>
           <option value="mediaDocena" ${t.tipo==='mediaDocena'?'selected':''}>Media docena — $13.000</option>
         </select>
+      </div>
+      <div class="ticket-checks">
+        <label class="check-item ${t.pago?'checked':''}">
+          <input type="checkbox" id="t-pago-${i}" ${t.pago?'checked':''} onchange="this.closest('.check-item').classList.toggle('checked',this.checked)">
+          <span class="check-label">💰 Pago</span>
+        </label>
+        <label class="check-item ${t.entregado?'checked':''}">
+          <input type="checkbox" id="t-entregado-${i}" ${t.entregado?'checked':''} onchange="this.closest('.check-item').classList.toggle('checked',this.checked)">
+          <span class="check-label">🎫 Entregado</span>
+        </label>
       </div>
       <button class="btn-rm-ticket" onclick="eliminarTicket(${i})" title="Quitar">✕</button>`;
     c.appendChild(div);
@@ -399,16 +417,35 @@ async function eliminarCompradorActual(){
 function renderResumen(){
   const c=document.getElementById('resumen-container');
   if(ventas.length===0){c.innerHTML='<div class="empty-res">Aún no registraste ventas.</div>';return;}
-  let totalDoc=0,totalMed=0;
-  let html=`<table class="resumen-table"><thead><tr><th>Comprador</th><th>Tickets</th><th class="num">Docenas</th><th class="num">Medias doc.</th></tr></thead><tbody>`;
+  let totalDoc=0,totalMed=0,totalTickets=0,totalPagos=0,totalEntregados=0;
+  let html=`<table class="resumen-table"><thead><tr><th>Comprador</th><th class="num">Tickets</th><th class="num">Docenas</th><th class="num">Medias</th><th class="num">💰 Pagos</th><th class="num">🎫 Entregados</th></tr></thead><tbody>`;
   ventas.forEach(v=>{
     const doc=v.tickets.filter(t=>t.tipo==='docena'||(!t.tipo&&t.docenas>0)).length;
     const med=v.tickets.filter(t=>t.tipo==='mediaDocena'||(t.mediaDocenas>0)).length;
-    const nums=v.tickets.map(t=>t.numero).filter(Boolean).join(', ');
-    totalDoc+=doc;totalMed+=med;
-    html+=`<tr><td>${v.nombre}</td><td style="font-size:0.82rem;color:var(--text-light)">${nums||'—'}</td><td class="num">${doc||'—'}</td><td class="num">${med||'—'}</td></tr>`;
+    const tks=v.tickets.length;
+    const pagos=v.tickets.filter(t=>t.pago).length;
+    const entregados=v.tickets.filter(t=>t.entregado).length;
+    totalDoc+=doc;totalMed+=med;totalTickets+=tks;totalPagos+=pagos;totalEntregados+=entregados;
+    const colorPago=pagos===tks?'color:var(--verde);font-weight:700':'';
+    const colorEnt=entregados===tks?'color:var(--verde);font-weight:700':'';
+    html+=`<tr>
+      <td>${v.nombre}</td>
+      <td class="num" style="font-weight:700">${tks}</td>
+      <td class="num">${doc||'—'}</td>
+      <td class="num">${med||'—'}</td>
+      <td class="num" style="${colorPago}">${pagos}/${tks}</td>
+      <td class="num" style="${colorEnt}">${entregados}/${tks}</td>
+    </tr>`;
   });
-  html+=`<tr class="total-row-res"><td colspan="2"><strong>TOTAL</strong></td><td class="num">${totalDoc}</td><td class="num">${totalMed}</td></tr></tbody></table>`;
+  const totalTks=totalDoc+totalMed;
+  html+=`<tr class="total-row-res">
+    <td><strong>TOTAL</strong></td>
+    <td class="num">${totalTickets}</td>
+    <td class="num">${totalDoc}</td>
+    <td class="num">${totalMed}</td>
+    <td class="num">${totalPagos}/${totalTickets}</td>
+    <td class="num">${totalEntregados}/${totalTickets}</td>
+  </tr></tbody></table>`;
   c.innerHTML=html;
 }
 
